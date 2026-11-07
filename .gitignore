@@ -1,0 +1,12 @@
+# Secrets: never commit these
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editors
+.idea/
+.vscode/
