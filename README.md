@@ -150,7 +150,6 @@ What I noticed:
 
 - **Omissions go unnoticed.** Quote grounding catches findings the model *invents*, but not signs it *forgets*. If the farmer says "can't get up" and the model returns nothing, the code can't tell. This is the biggest risk, and it's why recall on the urgent signs is my headline accuracy metric below.
 - **Shona support is thin.** The prompt glossary contains only terms that appear in the brief itself (`mbandabvu`, `haisi kudya`, `mombe`). I deliberately did not add Shona words I couldn't verify. The model is probably weaker in Shona than English, and I haven't measured by how much.
-- **No labelled evaluation set yet.** The tests prove the *application logic* with a fake model. They say nothing about how accurate the real model is. See the plan below.
 - **Single message only.** No conversation history or follow-ups.
 - **No authentication or rate limiting** on the endpoint.
 - **Free-tier limits.** Groq's free tier is rate-limited, so this isn't sized for production traffic.
