@@ -37,7 +37,7 @@ cp .env.example .env                   # then paste your GROQ_API_KEY into .env
 uvicorn app.main:app --reload
 ```
 
-- Interactive docs : http://127.0.0.1:8000/docs
+- Interactive docs: http://127.0.0.1:8000/docs
 - Or with curl:
 
 ```bash
@@ -124,15 +124,25 @@ The Groq client is synchronous. FastAPI runs sync endpoints in a thread pool, so
 
 ## Observations from running the sample messages
 
-> **[Fill this in from your real runs before submitting. Paste what the model actually returned, and be honest about mistakes. Delete this note afterwards.]**
+I ran the five sample messages against the real model (`openai/gpt-oss-20b`), printing both the raw model output and the final validated response.
 
-| Message | Findings returned | Escalate | Notes |
-|---|---|---|---|
-| "My cow has not been eating since yesterday and she is breathing very fast." | [ ] | [ ] | [ ] |
-| "There's foam coming from her nose and she can't get up." | [ ] | [ ] | [ ] |
-| "I think the eyes look a bit cloudy but I'm not sure. She has mbandabvu under the ear." | [ ] | [ ] | [ ] |
-| "The calf is fine, just lots of ticks on the ears." | [ ] | [ ] | [ ] |
-| "Mombe yangu haisi kudya, and her urine is dark like tea." | [ ] | [ ] | [ ] |
+| Message | Findings returned | Escalate |
+|---|---|---|
+| "My cow has not been eating since yesterday and she is breathing very fast." | `reduced_appetite: yes`, `rapid_breathing: yes` | false |
+| "There's foam coming from her nose and she can't get up." | `froth_nose_mouth: yes`, `unable_to_stand: yes` | **true** |
+| "I think the eyes look a bit cloudy but I'm not sure. She has mbandabvu under the ear." | `cloudy_eye: not_sure`, `swelling: yes` | **true** |
+| "The calf is fine, just lots of ticks on the ears." | `ticks: yes` | false |
+| "Mombe yangu haisi kudya, and her urine is dark like tea." | `reduced_appetite: yes`, `red_urine: yes` | false |
+
+What I noticed:
+
+- **All five were correct**, including the `not_sure` case (escalated because of `cloudy_eye`) and the mixed Shona/English message.
+- **Nothing was filtered.** The raw model output and the final response were identical for every message, so the quote-grounding check and the sign validation had nothing to remove in these runs. They are covered by the unit tests instead, using fake model output.
+- **"The calf is fine" produced no finding**, as intended. The model reported only the ticks.
+- **Quotes are valid but not always minimal.** For example, `"There's foam coming from her nose"`, `"She has mbandabvu under the ear."` (including the full stop) and `"just lots of ticks on the ears"`. The prompt asks for the shortest supporting text, so this is a prompt-tuning opportunity. Every quote did appear in the message, which is all the grounding check requires.
+- **The cloudy-eye quote omits "but I'm not sure".** The value was still correctly `not_sure`, but it shows the quote doesn't always carry the uncertainty with it.
+- **Caveat on the Shona result:** the prompt's glossary includes `mbandabvu` and `haisi kudya`, which are the terms from these sample messages, so this run shows the glossary working and not how the model copes with Shona it hasn't been given hints for.
+- **This is five messages.** It's a smoke test, not an accuracy measurement. See the plan below for how I'd measure properly.
 
 ---
 
