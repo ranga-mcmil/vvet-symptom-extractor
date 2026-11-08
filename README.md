@@ -152,7 +152,6 @@ What I noticed:
 - **Shona support is thin.** The prompt glossary contains only terms that appear in the brief itself (`mbandabvu`, `haisi kudya`, `mombe`). I deliberately did not add Shona words I couldn't verify. The model is probably weaker in Shona than English, and I haven't measured by how much.
 - **Single message only.** No conversation history or follow-ups.
 - **No authentication or rate limiting** on the endpoint.
-- **Free-tier limits.** Groq's free tier is rate-limited, so this isn't sized for production traffic.
 
 ---
 
