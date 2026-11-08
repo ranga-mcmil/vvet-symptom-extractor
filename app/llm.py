@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 LLMFunc = Callable[[str], dict[str, Any]]
 
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_MODEL = "openai/gpt-oss-20b"
 
 SYSTEM_PROMPT = """\
 You extract structured findings from a farmer's description of a sick animal.
